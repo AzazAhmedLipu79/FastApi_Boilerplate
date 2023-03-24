@@ -1,13 +1,12 @@
 # Here we will define out tables and there model🏓
 from enum import Enum
-
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey,Enum as EnumType
-
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
-
 from .db_connection import Base
+
+
 
 class Gender(Enum):
     M = 'Male'
@@ -15,9 +14,10 @@ class Gender(Enum):
     OTHER = 'Other'
 
 class Role(Enum):
-    member='member'
-    moderator = 'moderator'
-    admin = 'admin'
+    member='member' #  Default User role of this server
+    director = 'director'  # This User Can Create Course and give access for coordinating specific member
+    coordinator = 'coordinator' # This User Can Manage Course Content
+    elite_user='elite_user' # This user is to monitor the entire server's content. This user has access to everything
 
 
 class User(Base):
@@ -28,7 +28,7 @@ class User(Base):
     email = Column(String(41), nullable=False, unique=True)
     password = Column(String, nullable=False)    
     gender = Column(EnumType(Gender), nullable=False)
-    role = Column(EnumType(Role), nullable=False, server_default="member")
+    role = Column(EnumType(Role), nullable=False, server_default="member") 
 
 """ 
 The provided code defines three Enum classes called Gender, Role, and User. The Gender class defines three values for the possible genders, while the Role class defines three different roles. The User class defines a table schema for a user table using SQLAlchemy's Column objects. The schema includes columns for userId, userName, bornDate, email, password, gender, and role.
@@ -39,33 +39,33 @@ Overall, this code defines a database schema that describes a user table, where 
 
 
 
-class Post(Base):
-    __tablename__ = "posts"
+# class Post(Base):
+#     __tablename__ = "posts"
 
-    id = Column(Integer, primary_key=True, nullable=False)
-    title = Column(String, nullable=False)
-    content = Column(String, nullable=False)
-    published = Column(Boolean, server_default='TRUE', nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    owner_id = Column(Integer, ForeignKey(
-        "users.id", ondelete="CASCADE"), nullable=False)
-
-    owner = relationship("User")
-
-
-# class User(Base):
-#     __tablename__ = "users"
 #     id = Column(Integer, primary_key=True, nullable=False)
-#     email = Column(String, nullable=False, unique=True)
-#     password = Column(String, nullable=False)
+#     title = Column(String, nullable=False)
+#     content = Column(String, nullable=False)
+#     published = Column(Boolean, server_default='TRUE', nullable=False)
 #     created_at = Column(TIMESTAMP(timezone=True),
 #                         nullable=False, server_default=text('now()'))
+#     owner_id = Column(Integer, ForeignKey(
+#         "users.id", ondelete="CASCADE"), nullable=False)
+
+#     owner = relationship("User")
 
 
-class Vote(Base):
-    __tablename__ = "votes"
-    user_id = Column(Integer, ForeignKey(
-        "users.id", ondelete="CASCADE"), primary_key=True)
-    post_id = Column(Integer, ForeignKey(
-        "posts.id", ondelete="CASCADE"), primary_key=True)
+# # class User(Base):
+# #     __tablename__ = "users"
+# #     id = Column(Integer, primary_key=True, nullable=False)
+# #     email = Column(String, nullable=False, unique=True)
+# #     password = Column(String, nullable=False)
+# #     created_at = Column(TIMESTAMP(timezone=True),
+# #                         nullable=False, server_default=text('now()'))
+
+
+# class Vote(Base):
+#     __tablename__ = "votes"
+#     user_id = Column(Integer, ForeignKey(
+#         "users.id", ondelete="CASCADE"), primary_key=True)
+#     post_id = Column(Integer, ForeignKey(
+#         "posts.id", ondelete="CASCADE"), primary_key=True)
